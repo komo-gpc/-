@@ -4,7 +4,8 @@
 
 void sampling(int ,int ,double* );
 void fourier(int ,double* ,double* );
-void output(int ,double* );
+void output_sample(int ,double* );
+void output_fourier(int ,double* );
 
 int main()
 {
@@ -18,8 +19,9 @@ int main()
 	double date[winlen],res[winlen];
 	
 	sampling(num,winlen,date);
+	output_sample(winlen,date);
 	fourier(winlen,date,res);
-	output(winlen,res);
+	output_fourier(winlen,res);
 	return 0;
 }
 
@@ -51,27 +53,49 @@ void fourier(int winlen_fo,double date_fo[winlen_fo],double res_fo[winlen_fo])
 	}
 }
 
-
-void output(int winlen_ou,double res_ou[winlen_ou])
+void output_sample(int winlen_ous,double sam_ous[winlen_ous])
 {
 	FILE *fp;
-	int i = (int)log10(winlen_ou)+1;
+	int i = (int)log10(winlen_ous)+1;
 	char su[13+i];
-	sprintf(su,"fourier_%d.dat",winlen_ou);
+	sprintf(su,"sample_%d.dat",winlen_ous);
 	fp = fopen(su,"w");
 	
-	for(int i=0;i<winlen_ou;i++)
+	for(int i=0;i<winlen_ous;i++)
 	{
-		fprintf(fp,"%.3f	%.3f\n",1000.0/(double)winlen_ou*(double)i,res_ou[i]);
+		fprintf(fp,"%.3f	%.3f\n",(double)i,sam_ous[i]);
 	}
 	
 	fclose(fp);
 	
-	/*
+	
 	FILE *gp;
 	
 	gp = popen("gnuplot -persist","w");
-	fprintf(gp,"plot \"fourier_%d.dat\" w lp \n",winlen_ou);
+	fprintf(gp,"plot \"sample_%d.dat\" w lp \n",winlen_ous);
 	pclose(gp);
-	*/
+}
+
+void output_fourier(int winlen_ouf,double res_ouf[winlen_ouf])
+{
+	FILE *fp;
+	int i = (int)log10(winlen_ouf)+1;
+	char su[13+i];
+	sprintf(su,"fourier_%d.dat",winlen_ouf);
+	fp = fopen(su,"w");
+	
+	for(int i=0;i<winlen_ouf;i++)
+	{
+		fprintf(fp,"%.3f	%.3f\n",1000.0/(double)winlen_ouf*(double)i,res_ouf[i]);
+	}
+	
+	fclose(fp);
+	
+	
+	FILE *gp;
+	
+	gp = popen("gnuplot -persist","w");
+	fprintf(gp,"plot \"fourier_%d.dat\" w lp \n",winlen_ouf);
+	pclose(gp);
+	
 }
